@@ -1,2 +1,2 @@
 # Wave
-Wave Game Demonstrating Java Skills
+Wave main.Game Demonstrating Java Skills
