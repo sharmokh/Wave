@@ -8,86 +8,101 @@ public class Game extends Canvas implements Runnable {
     public static final int WIDTH = 640, HEIGHT = WIDTH / 12 * 9;
     private Thread thread;
     private boolean running = false;
+    private Handler handler;
 
     public Game() {
 
         new Window(WIDTH, HEIGHT, "New Game", this);
-
+        handler = new Handler();
+        handler.addObject(new Player(100, 100, ID.Player));
+        handler.addObject(new Player(200, 300, ID.Player));
     }
 
     public synchronized void start() {
 
-        thread = new Thread(this);
-        thread.start();
+        if (running) return;
         running = true;
+        thread = new Thread(this );
+        thread.start();
     }
 
     public synchronized void stop() {
 
+        if (!running) return;
+        running = false;
         try {
             thread.join();
-            running = false;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    // Code taken from https://youtu.be/1gir2R7G9ws
     @Override
     public void run() {
 
-        long lastTime = System.nanoTime();
-        double amountOfTicks = 60.0;
-        double ns = 1000000000 / amountOfTicks;
+        // Tracks time before rendering next frame in nanoseconds.
+        int framePerSecond = 60;
+        double timeBetweenFrames = 1000000000 / framePerSecond;
         double delta = 0;
-        long timer = System.currentTimeMillis();
-        int frames = 0;
+
+        // Holds time in nanosecond for current and previous time in loop
+        long now;
+        long lastTime = System.nanoTime();
+
+        // Verifies frames per second
+        long timer = 0;
+        int frame = 0;
 
         while (running) {
 
-            long now = System.nanoTime();
-            delta += (now - lastTime) / ns;
+            // delta tracks amount of time between frames
+            // timer tracks number of frames per second
+            now = System.nanoTime();
+            delta += now - lastTime;
+            timer += now - lastTime;
             lastTime = now;
 
-            while (delta >= 1) {
+            // Updates environment and renders screen once every time
+            // delta exceeds timeBetweenFrames
+            if (delta >= timeBetweenFrames) {
                 tick();
-                delta--;
-            }
-
-            if (running) {
                 render();
-            }
-            frames++;
-            if(System.currentTimeMillis() - timer > 1000) {
-                timer += 1000;
-                System.out.println("FPS: " + frames);
-                frames = 0;
+                frame++;
+                delta -= timeBetweenFrames;
             }
 
+            // Prints frame rate per second
+            if (timer > 1000000000) {
+                System.out.println("Frames: " + frame);
+                timer = 0;
+                frame = 0;
+            }
         }
 
         stop();
     }
 
     private void tick() {
-
+        handler.tick();
     }
 
-    // Code taken from https://youtu.be/1gir2R7G9ws
     private void render() {
 
-        BufferStrategy bs = this.getBufferStrategy();
-        if (bs == null) {
+        BufferStrategy bufferStrategy = this.getBufferStrategy();
+        if (bufferStrategy == null) {
             this.createBufferStrategy(3);
             return;
         }
 
-        Graphics g = bs.getDrawGraphics();
-        g.setColor(Color.RED);
-        g.fillRect(0,0,WIDTH,HEIGHT);
-        g.dispose();
-        bs.show();
+        Graphics graphic = bufferStrategy.getDrawGraphics();
+        graphic.setColor(Color.black);
+        graphic.fillRect(0,0, WIDTH, HEIGHT);
+
+        handler.render(graphic);
+
+        graphic.dispose();
+        bufferStrategy.show();
 
     }
 
