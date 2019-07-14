@@ -13,6 +13,7 @@ public class Game extends Canvas implements Runnable {
     public Game() {
         handler = new Handler();
         handler.addObject(new Player(100, 100, ID.Player));
+        handler.addObject(new BaseEnemy(150, 200, ID.Enemy));
         this.addKeyListener(new KeyInput(handler));
         new Window(WIDTH, HEIGHT, "New Game", this);
     }
@@ -41,7 +42,7 @@ public class Game extends Canvas implements Runnable {
     public void run() {
 
         // Tracks time before rendering next frame in nanoseconds.
-        int framePerSecond = 60;
+        int framePerSecond = 30;
         double timeBetweenFrames = 1000000000 / framePerSecond;
         double delta = 0;
 

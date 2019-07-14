@@ -19,6 +19,19 @@ public class Player extends GameObject {
     public void tick() {
         x += velX;
         y += velY;
+
+        if (x < 0) {
+            x = Game.WIDTH;
+        }
+        if (x > Game.WIDTH) {
+            x = 0;
+        }
+        if (y < 0) {
+            y = Game.HEIGHT;
+        }
+        if (y > Game.HEIGHT) {
+            y = 0;
+        }
     }
 
     @Override
