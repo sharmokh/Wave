@@ -1,31 +1,33 @@
 package main;
 
 import java.awt.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Handler {
 
-    List<GameObject> objects = new LinkedList<>();
+    private Map<ID, GameObject> objects = new HashMap<>();
 
     public void tick() {
-        for (GameObject object : objects) {
+        for (GameObject object : objects.values()) {
             object.tick();
         }
     }
 
     public void render(Graphics graphic) {
-        for (GameObject object : objects) {
+        for (GameObject object : objects.values()) {
             object.render(graphic);
         }
     }
 
+    public GameObject getById(ID id) { return objects.get(id); }
+
     public void addObject(GameObject object) {
-        this.objects.add(object);
+        this.objects.put(object.getId(), object);
     }
 
     public void removeObject(GameObject object) {
-        this.objects.remove(object);
+        this.objects.remove(object.getId());
     }
 
 }

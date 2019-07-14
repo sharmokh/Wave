@@ -10,8 +10,8 @@ public class Player extends GameObject {
     public Player(int x, int y, ID id) {
 
         super(x, y, id);
-        velX = random.nextInt(5);
-        velY = random.nextInt(8);
+        //velX = random.nextInt(5);
+        //velY = random.nextInt(8);
 
     }
 

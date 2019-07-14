@@ -11,11 +11,10 @@ public class Game extends Canvas implements Runnable {
     private Handler handler;
 
     public Game() {
-
-        new Window(WIDTH, HEIGHT, "New Game", this);
         handler = new Handler();
         handler.addObject(new Player(100, 100, ID.Player));
-        handler.addObject(new Player(200, 300, ID.Player));
+        this.addKeyListener(new KeyInput(handler));
+        new Window(WIDTH, HEIGHT, "New Game", this);
     }
 
     public synchronized void start() {
@@ -51,8 +50,8 @@ public class Game extends Canvas implements Runnable {
         long lastTime = System.nanoTime();
 
         // Verifies frames per second
-        long timer = 0;
-        int frame = 0;
+        // long timer = 0;
+        // int frame = 0;
 
         while (running) {
 
@@ -60,7 +59,7 @@ public class Game extends Canvas implements Runnable {
             // timer tracks number of frames per second
             now = System.nanoTime();
             delta += now - lastTime;
-            timer += now - lastTime;
+            // timer += now - lastTime;
             lastTime = now;
 
             // Updates environment and renders screen once every time
@@ -68,16 +67,18 @@ public class Game extends Canvas implements Runnable {
             if (delta >= timeBetweenFrames) {
                 tick();
                 render();
-                frame++;
+                // frame++;
                 delta -= timeBetweenFrames;
             }
 
+            /*
             // Prints frame rate per second
             if (timer > 1000000000) {
                 System.out.println("Frames: " + frame);
                 timer = 0;
                 frame = 0;
             }
+            */
         }
 
         stop();
